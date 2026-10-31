@@ -94,7 +94,7 @@ RRF recorded the highest faithfulness and answer relevancy, while BM25 recorded 
 The following limitations reflect both the original coursework evaluation and a subsequent technical review during portfolio preparation. The submitted methodology and reported results have not been replaced or rerun.
 
 - **Small, manually judged test set:** 40 queries cannot establish performance across all policy questions. No statistical significance testing or hyperparameter sensitivity analysis was performed.
-- **QREL consistency:** A subsequent review found eight judgements for questions `q07` and `q08` that did not match the indexed Free Speech policy chunks. A difference in document versions is plausible but unconfirmed. The original results have not been altered.
+- **QREL consistency:** A subsequent review found eight judgements for questions `q07` and `q08` that did not match the indexed Free Speech policy chunks. A difference in document versions was confirmed. The original results have not been altered.
 - **Uneven chunk lengths:** section-based chunks could be long; only the first 1,200 characters of each selected chunk reached the generation model.
 - **Generation/evaluation mismatch:** RAGAS assessed full retrieved chunks rather than the truncated passages used for answer generation.
 - **Incomplete evaluations:** some responses were skipped, and API timeouts resulted in missing RAGAS scores.
