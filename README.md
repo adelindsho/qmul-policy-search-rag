@@ -14,26 +14,30 @@ We compared **BM25**, **TF-IDF / Vector Space Model (VSM)** and **Reciprocal Ran
 
 ```text
 20 QMUL policy PDFs
-       |
+         |
 PDF extraction and text cleaning
-       |
-Section-based chunking (237 chunks, with document/page metadata)
-       |
+         |
+Section-based chunking (237 chunks with source metadata)
+         |
 Tokenisation, query expansion and section-title boosting
-       |
-BM25 ranking   TF-IDF ranking
-       |             |
-       +---- RRF fusion ----+
-                 |
-       Ranked policy sections
-                 |
-       Stage 1: retrieval evaluation (@10)
-                 |
-       Top 5 chunks (up to 1,200 characters each)
-                 |
-       GPT-4o-mini -> generated answer + source references
-                 |
-       Stage 2: RAGAS evaluation (Gemini 2.5 Flash judge)
+         |
+   BM25 ranking           TF-IDF ranking
+         |                      |
+         +------ RRF fusion ----+
+
+Three retrieval methods: BM25 / TF-IDF / RRF
+         |
+         +--------------------------+
+         |                          |
+Stage 1: retrieval evaluation   Stage 2: answer generation
+40 queries and graded QRELs     Top 5 chunks per method
+P@10, Recall@10, MRR@10,       (up to 1,200 chars per chunk)
+nDCG@10                        |
+                                GPT-4o-mini + source references
+                                |
+                                RAGAS evaluation
+                                (Gemini 2.5 Flash judge;
+                                 OpenAI evaluation embeddings)
 ```
 
 The three retrieval approaches were compared separately; RRF combines the BM25 and TF-IDF rankings.
@@ -83,9 +87,11 @@ BM25 ranked relevant sections earliest on average, with the highest MRR@10 and n
 
 RRF recorded the highest faithfulness and answer relevancy, while BM25 recorded the highest context utilisation. These outcomes illustrate why retrieval metrics and answer-quality metrics should be interpreted together rather than treated as interchangeable.
 
-**Results note:** These are the **original submitted coursework results**, preserved from the executed notebook. They have **not been independently revalidated or rerun** for this portfolio. The RAGAS stage evaluated 38 answers for BM25, 38 for TF-IDF and 39 for RRF; some additional metric values were missing because of API timeouts. Reported averages exclude missing values, so comparisons need care.
+**Results note:** These are the **original submitted coursework results**, preserved from the executed notebook. They have **not been independently revalidated or rerun** for this portfolio. The RAGAS stage submitted 38 answers for BM25, 38 for TF-IDF and 39 for RRF for evaluation; some metric scores were missing because of API timeouts. Reported averages exclude missing values, so comparisons need care.
 
 ## Limitations and lessons
+
+The following limitations reflect both the original coursework evaluation and a subsequent technical review during portfolio preparation. The submitted methodology and reported results have not been replaced or rerun.
 
 - **Small, manually judged test set:** 40 queries cannot establish performance across all policy questions. No statistical significance testing or hyperparameter sensitivity analysis was performed.
 - **QREL consistency:** A subsequent review found eight judgements for questions `q07` and `q08` that did not match the indexed Free Speech policy chunks. A difference in document versions is plausible but unconfirmed. The original results have not been altered.
@@ -93,7 +99,7 @@ RRF recorded the highest faithfulness and answer relevancy, while BM25 recorded 
 - **Generation/evaluation mismatch:** RAGAS assessed full retrieved chunks rather than the truncated passages used for answer generation.
 - **Incomplete evaluations:** some responses were skipped, and API timeouts resulted in missing RAGAS scores.
 - **Source verification:** generated citations identify retrieved sections and pages, but individual answer claims were not independently verified against those citations.
-- **Limited error analysis:** detailed per-query failure examples and an end-to-end visual data-flow diagram were not part of the submitted evaluation.
+- **Limited error analysis:** the submitted evaluation did not provide detailed per-query failure examples illustrating where individual retrieval or generation methods struggled.
 
 These are limitations of the historical coursework, not claims that the system is ready for live institutional use.
 
@@ -127,5 +133,4 @@ This was a **collaborative Group 88 submission** for QMUL's MSc Data Science and
 
 My main responsibilities were the **RAGAS answer-quality evaluation** and preparing the **query relevance judgements (QRELs)**. I also made a substantial contribution to the Python notebook's implementation, integration and execution, using AI-assisted coding tools during development, and contributed to interpreting the results.
 
-Groupmates primarily worked on document chunking, retrieval and reranking, and LLM answer generation. Work was shared and reviewed across the group; the repository represents the **original group submission**, not a claim of sole authorship.# qmul-policy-search-rag
-Retrieval-Augmented Generation for QMUL policy search: comparing BM25, TF-IDF and RRF with retrieval and RAGAS evaluation.
+Groupmates primarily worked on document chunking, retrieval and reranking, and LLM answer generation. Work was shared and reviewed across the group; the repository represents the **original group submission**, not a claim of sole authorship.
